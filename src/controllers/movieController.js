@@ -4,6 +4,7 @@ const movieList = [{
     rating: 3,
     type: "Classic"
 },
+
 {
     id: 2,
     movieName: 'Cast away',
