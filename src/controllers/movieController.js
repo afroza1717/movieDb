@@ -1,26 +1,33 @@
-const movieList = [{
-    id: 1,
-    movieName: 'Walking in the cloud',
-    rating: 3,
-    type: "Classic"
-},
-
-{
-    id: 2,
-    movieName: 'Cast away',
-    rating: 5,
-    type: "Adventure"
-}
-];
+import Movie from "../models/movie.js";
 
 /**
  * Getting Movie List
  * @param {*} req 
  * @param {*} res 
  */
-export const getMovie = (req, res) => {
-    res.json(movieList);
-}
+export const getMovie = async (req, res) => {
+    try {
+      //DOCS: https://mongoosejs.com/docs/api/query.html#Query.prototype.find()
+      const movie = await Movie.find();
+      res.status(200).json(movie);
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+  };
+
+//   // Get Task by ID
+// export const getTaskById = async (req, res) => {
+//     try {
+//       //DOCS: https://mongoosejs.com/docs/api/model.html#Model.findOne()
+//       const task = await Task.findOne({ movie_id: req.params.movie_id });
+//       if (!task) {
+//         return res.status(404).json({ message: "Task not found" });
+//       }
+//       res.status(200).json(task);
+//     } catch (error) {
+//       res.status(500).json({ message: "Internal Server Error", error: error.message });
+//     }
+//   };
 
 /**
  * Getting movie by Id
@@ -28,25 +35,22 @@ export const getMovie = (req, res) => {
  * @param {*} res 
  * @returns 
  */
-export const getMovieById = (req, res) => {
+export const getMovieById = async (req, res) => {
     console.log("req.params", req.params.id);
-    const movieIdFromReq = parseInt(req.params.id);
-
-    const specificMovie = movieList.find(movie => movieIdFromReq === movie.id);
-
-    //If movie doesn't exist with that Id
-    if (!specificMovie) {
-        return res.status(404).json({
-            message: 'No movie found with id:' + movieIdFromReq
-        })
-    }
-
-    //Returning the matched movie with that specific id 
-    return res.status(200).json({
-        data: specificMovie
-    })
+   
+    try {
+        //DOCS: https://mongoosejs.com/docs/api/model.html#Model.findOne()
+        const movie = await Movie.findOne({ movie_id: req.params.movie_id });
+        if (!movie) {
+          return res.status(404).json({ message: "Movie not found" });
+        }
+        res.status(200).json(movie);
+      } catch (error) {
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+      }
 
 }
+
 
 /**
  * Creating New Movie
@@ -54,8 +58,9 @@ export const getMovieById = (req, res) => {
  * @param {*} res 
  */
 
-export const createMovie = (req, res) => {
-    const newMovie = req.body;
+export const createMovie = async (req, res) => {
+    try {
+    const newMovie = new Movie(req.body);
     if (!newMovie.movieName) {
         return res.status(400).json({
             message: 'Movie Title is Required'
@@ -68,7 +73,14 @@ export const createMovie = (req, res) => {
         })
     }
 
-    movieList.push(newMovie);
+    //DOCS: https://mongoosejs.com/docs/api/document.html#Document.prototype.save()
+    const savedTask = await newTask.save();
+    res.status(201).json(savedTask);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ message: "Error creating movie", error: error.message });
+  }
 
     res.status(201).json({
         message: 'Movie Created Successfully.',
@@ -82,58 +94,51 @@ export const createMovie = (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
+
 export const updateMovie = async (req, res) => {
     console.log("req.params", req.params);
 
-    const movieId = parseInt(req.params.id);
-    //Request Payload
-    const { movieReq } = req.body;//Short object property Access
-
-    console.log("req.body", req.body.movieReq);
-
-    //Finding the movie with Id 
-    let updatedMovieResult = movieList.find(updatedMovieResult => movieId === updatedMovieResult.id);
-    updatedMovieResult = { ...updatedMovieResult, movieReq };
-
-    // if we dont have movie from movieList
-    if (!updatedMovieResult) {
-        return res.status(404).json({
-            message: 'No Movie Found'
-        })
+    try {
+      //DOCS https://mongoosejs.com/docs/api/model.html#Model.findOneAndUpdate()
+      const updatedMovie = await Task.findOneAndUpdate(
+        { movie_id: req.params.movie_id },
+        req.body,
+        {
+          new: true, //return the modified document rather than the original
+        }
+      );
+      if (!updatedMovie) {
+        return res.status(404).json({ message: "Movie not found" });
+      }
+      res.status(200).json(updatedMovie);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error updating task", error: error.message });
     }
-
-    //Send Correct Movie Details
-    return res.status(200).json({
-        data: updatedMovieResult
-    })
 
 }
 
+
+
+  
+
 //Delete Movie
-export const deleteSpecificMovie = (req, res) => {
+export const deleteSpecificMovie = async (req, res) => {
     console.log("req.params", req.params);
-    const movieId = parseInt(req.params.id);
-
-    //Request Payload
-    console.log("movieId", movieId);
-
-    //Finding index of the movie to delete
-    let resultMovie = movieList.findIndex(movieResult => movieId === movieResult.id);
-
-    // if we dont have movie with that id
-    if (resultMovie === -1) {
-        return res.status(404).json({
-            message: 'No Movie Found'
-        })
-    }
-
-    //Delete Movie from Specific Index
-    movieList.splice(resultMovie, 1);
-
-
-    //Delete Specific Movie
-    return res.status(200).json({
-        message: "Movie Delete Successfully"
-    })
+    try {
+        //DOCS https://mongoosejs.com/docs/api/model.html#Model.findOneAndDelete()
+        const deletedMovie = await Movie.findOneAndDelete({
+            movie_id: req.params.movie_id,
+        });
+        if (!deletedMovie) {
+          return res.status(404).json({ message: "Movie not found" });
+        }
+        res.status(200).json({ message: "Movie deleted successfully" });
+      } catch (error) {
+        res
+          .status(500)
+          .json({ message: "Error deleting movie", error: error.message });
+      }
 
 }
