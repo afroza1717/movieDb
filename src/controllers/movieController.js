@@ -15,19 +15,7 @@ export const getMovie = async (req, res) => {
     }
   };
 
-//   // Get Task by ID
-// export const getTaskById = async (req, res) => {
-//     try {
-//       //DOCS: https://mongoosejs.com/docs/api/model.html#Model.findOne()
-//       const task = await Task.findOne({ movie_id: req.params.movie_id });
-//       if (!task) {
-//         return res.status(404).json({ message: "Task not found" });
-//       }
-//       res.status(200).json(task);
-//     } catch (error) {
-//       res.status(500).json({ message: "Internal Server Error", error: error.message });
-//     }
-//   };
+
 
 /**
  * Getting movie by Id
@@ -36,11 +24,9 @@ export const getMovie = async (req, res) => {
  * @returns 
  */
 export const getMovieById = async (req, res) => {
-    console.log("req.params", req.params.id);
-   
     try {
         //DOCS: https://mongoosejs.com/docs/api/model.html#Model.findOne()
-        const movie = await Movie.findOne({ movie_id: req.params.movie_id });
+        const movie = await Movie.findOne({movie_id: req.params.movie_id });
         if (!movie) {
           return res.status(404).json({ message: "Movie not found" });
         }
@@ -74,7 +60,7 @@ export const createMovie = async (req, res) => {
     }
 
     //DOCS: https://mongoosejs.com/docs/api/document.html#Document.prototype.save()
-    const savedTask = await newTask.save();
+    const savedTask = await newMovie.save();
     res.status(201).json(savedTask);
   } catch (error) {
     res

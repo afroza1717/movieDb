@@ -1,22 +1,21 @@
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
+import dotenv from  "dotenv"; 
+import mongoose from "mongoose";
 
-//To access the env properties
 dotenv.config();
 
-//Function to connect with database 
+//Function To connect with Database
+//Docs: https://mongoosejs.com/docs/api/mongoose.html#Mongoose.prototype.connect()
 const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI , {
-            dbName:'movie-db',
-            appName:'movie-db'
-
-        
-        })
-        console.log("Database connected succesfully");
-    } catch (error) {
-        console.error(error);
-    }
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      dbName: "movie-new-db",
+      appName: "movie-new-db",
+      //Put name of your application
+    });
+    console.log("Database Connected Successfully.")
+  } catch (error) {
+    console.error("Database Connection Failed", error);
+  }
 };
 
 export default connectDB;

@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors'; //Enable Cross origin Resource Sharing
 import morgan from 'morgan'; //Logging 
-import movieRouter from '../src/routes/movieRoute.js';
+import movieRouter from './routes/movieRoute.js';
 
 
 const app = express();
