@@ -13,7 +13,7 @@ export const getMovie = async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
-  };
+};
 
 
 
@@ -34,7 +34,6 @@ export const getMovieById = async (req, res) => {
       } catch (error) {
         res.status(500).json({ message: "Internal Server Error", error: error.message });
       }
-
 }
 
 
@@ -60,8 +59,8 @@ export const createMovie = async (req, res) => {
     }
 
     //DOCS: https://mongoosejs.com/docs/api/document.html#Document.prototype.save()
-    const savedTask = await newMovie.save();
-    res.status(201).json(savedTask);
+    const savedMovie = await newMovie.save();
+    res.status(201).json(savedMovie);
   } catch (error) {
     res
       .status(400)
@@ -70,7 +69,7 @@ export const createMovie = async (req, res) => {
 
     res.status(201).json({
         message: 'Movie Created Successfully.',
-        data: newMovie
+        data: savedMovie
     })
 }
 
@@ -86,7 +85,7 @@ export const updateMovie = async (req, res) => {
 
     try {
       //DOCS https://mongoosejs.com/docs/api/model.html#Model.findOneAndUpdate()
-      const updatedMovie = await Task.findOneAndUpdate(
+      const updatedMovie = await Movie.findOneAndUpdate(
         { movie_id: req.params.movie_id },
         req.body,
         {
@@ -100,7 +99,7 @@ export const updateMovie = async (req, res) => {
     } catch (error) {
       res
         .status(500)
-        .json({ message: "Error updating task", error: error.message });
+        .json({ message: "Error updating Movie", error: error.message });
     }
 
 }
