@@ -8,8 +8,8 @@ dotenv.config();
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
-      dbName: "movie-new-db",
-      appName: "movie-new-db",
+      dbName: "movie-connection-db",
+      appName: "movie-connection-db",
       //Put name of your application
     });
     console.log("Database Connected Successfully.")
