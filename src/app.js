@@ -1,8 +1,13 @@
 import express from 'express';
 import cors from 'cors'; //Enable Cross origin Resource Sharing
 import morgan from 'morgan'; //Logging 
-import movieRouter from '../src/routes/movieRoute.js';
 
+import AuthRouter from './routes/authRoutes.js';
+import passport from 'passport'; 
+import passportConfig from './config/passport.js'; 
+
+import movieRouter from './routes/movieRoute.js';
+import userMoviewRouter from './routes/userMovieRoute.js';
 
 const app = express();
 
@@ -12,6 +17,18 @@ app.use(cors());
 app.use(morgan('dev'));
 
 
+// Call the passportConfig function and pass the 'passport' object to it
+// This sets up any authentication strategies, session handling, etc.
+passportConfig(passport); 
+
+// Initialize passport in the app to handle authentication requests
+app.use(passport.initialize()); 
+
 app.use("/api/movies/", movieRouter)
+app.use("/api/userMovie/", userMoviewRouter)
+
+
+app.use('/api/auth', AuthRouter)
+
 
 export default app;

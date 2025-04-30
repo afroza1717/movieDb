@@ -1,18 +1,19 @@
 import express from "express";
 import { createMovie, getMovie, getMovieById, updateMovie } from "../controllers/movieController.js";
 import { deleteSpecificMovie } from "../controllers/movieController.js";
+import { AuthGuard } from "../middleware/authMiddleware.js";
 
 
 const movieRouter = express.Router();
 
-movieRouter.get('/', getMovie); //List of the Movies
+movieRouter.get('/', AuthGuard, getMovie); //List of the Movies
 
-movieRouter.get('/:id', getMovieById); //Get Specific Movie by Id
+movieRouter.get('/:id', AuthGuard,getMovieById); //Get Specific Movie by Id
 
-movieRouter.post('/', createMovie); //CREATE New Movies
+movieRouter.post('/', AuthGuard, createMovie); //CREATE New Movies
 
-movieRouter.put('/:id', updateMovie);
+movieRouter.put('/:id', AuthGuard, updateMovie);
 
-movieRouter.delete('/:id', deleteSpecificMovie);
+movieRouter.delete('/:id', AuthGuard, deleteSpecificMovie);
 
 export default movieRouter;
